@@ -59,3 +59,12 @@ Extract the archive:
      tar -xvzf taxdb.tar.gz
 
 After completing these steps, you will have all the required databases. Remember to add the path to the core_nt database in config.ini and place the taxdb.bti and taxdb.btd in the directory where you will run the SRAminer scripts.
+
+### SRAminer execution 
+SRAminer is designed to run the three stages (Retrieval, Filtering and Extraction, Validation) in two separate scripts: sraminer_screen.py and sraminer_validate.py.
+
+The first script is designed to identify potential hits (i.e., SRA runs) containing the specified target (i.e., top blastn matches to the user-input multi-fasta file), while the second script verifies accuracy of the target hits (matches) through de novo assembling the metagenomes from each initially positive SRA run, then screening these for blastn matches again.
+
+There are two ways to execute the script: run it in a Unix/Linux shell in Terminal or submit it as a job on a high-performance computing cluster. When running it via the terminal, be aware that if the terminal session is closed, the job will terminate. To prevent this, you can run the script in the background using the screen command.
+
+The user input command line argument required to run the script 
