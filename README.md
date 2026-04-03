@@ -68,3 +68,17 @@ The first script is designed to identify potential hits (i.e., SRA runs) contain
 There are two ways to execute the script: run it in a Unix/Linux shell in Terminal or submit it as a job on a high-performance computing cluster. When running it via the terminal, be aware that if the terminal session is closed, the job will terminate. To prevent this, you can run the script in the background using the screen command.
 
 The user input command line argument required to run the script 
+| Command-line arguments | Required/Optional | Default | Description |
+|-----------------------|------------------|---------|-------------|
+| `-np` | Required | — | Number of MPI processes (CPUs) to use for the run. This should match the number of available CPU cores on a local machine, or the number of CPU cores allocated by the scheduler on an HPC/HPCC system. |
+| `-m` | Required | — | `mpi4py`: In Python, `-m` tells the interpreter to execute a module. |
+| `--keyword` | Required | — | Specifies a mining keyword used to select a subset of NCBI SRA runs and must be enclosed in quotes on the command line. |
+| `--threads` | Optional | 1 | Specifies the number of threads to be used by BLAST during sequence alignment. Increasing the number of threads can improve performance on multicore systems but should not exceed available CPU resources. |
+| `--pi` | Required | — | Sets the minimum percent identity threshold used to post-filter BLAST tabular results produced by the pipeline. |
+| `--len` | Required | — | Minimum base pair length used to post-filter BLAST tabular results produced by the pipeline. |
+| `--grep_keyword` | Required | — | Post-filters BLAST results by matching a keyword pattern, allowing restriction to specific organisms or terms. |
+| `--db` | Required | sra | Specifies the database by default (Sequence Read Archive). |
+| `--mail` | Required | — | Email address required for NCBI server. |
+| `--taxon` | Optional | — | Downloads genomes for a taxon using NCBI datasets if `user_db` is not provided. |
+| `--user_db` | Required | — | The target FASTA file defining the biological signal of interest. Used to construct a BLAST database for screening SRA reads. |
+| `--wd` | Optional | current directory | Defines a user-managed working directory created and populated by the pipeline. Users should provide a unique directory per analysis to avoid overwriting. |
