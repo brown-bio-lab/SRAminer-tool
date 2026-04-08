@@ -156,5 +156,6 @@ D. Running sraminer_validate.py in a terminal without a user database:
 
 ### Testing SRAminer on a small dataset:
 
-
-
+1. Clone the GitHub repository 
+2. Install the required user downloads: BLAST core_nt database, NCBI taxonomy database (taxdb)
+3. Test on 1 SRR
