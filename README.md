@@ -156,6 +156,46 @@ D. Running sraminer_validate.py in a terminal without a user database:
 
 ### Testing SRAminer on a small dataset:
 
-1. Clone the GitHub repository 
-2. Install the required user downloads: BLAST core_nt database, NCBI taxonomy database (taxdb)
-3. Test on 1 SRR
+This guide walks through running SRAminer on a single SRA run to detect Cardinium as a target organism.
+
+#### Prerequisites
+
+1. Clone the repository
+git clone <your-repo-url>
+cd <repo-directory>
+
+2. Install required databases
+
+BLAST core_nt database
+
+NCBI taxonomy database (taxdb)
+
+Make sure both are properly downloaded and accessible to your environment.
+
+#### Test Dataset
+SRA Run: ERR15129509
+
+Target organism: Cardinium
+
+#### Running the Pipeline
+
+You can run the pipeline either directly in the terminal or as a batch script on an HPC system.
+
+Example Command
+###
+     SIF=sraminer_pipeline.sif
+     WORKDIR=/lustre/scratch/ersharma/fall_25_sraminer/final_card
+
+     apptainer exec \
+       --bind "$WORKDIR:/work" \
+       "$SIF" \
+       mpirun -np 1 python3 -m mpi4py /work/sraminer_screen.py \
+         --keyword "ERR15129509" \
+         --threads 1 \
+         --wd /work \
+         --user_db card16.fa \
+         --db sra \
+         --mail era.sharmapau@gmail.com \
+         --pi 94 \
+         --len 70 \
+         --grep_keyword "Cardinium"
