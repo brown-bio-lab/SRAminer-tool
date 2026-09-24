@@ -207,7 +207,7 @@ NCBI taxonomy database (taxdb)
 Make sure both are properly downloaded and accessible to your environment.
 
 #### Test Dataset
-SRA Run: ERR15129509
+SRA Run: SRR13979365
 
 Target organism: Cardinium
 
@@ -216,20 +216,29 @@ Target organism: Cardinium
 You can run the pipeline either directly in the terminal or as a batch script on an HPC system.
 
 Example Command
-###
-     SIF=sraminer_pipeline.sif
-     WORKDIR=/lustre/scratch/ersharma/fall_25_sraminer/final_card
+```bash
+WORKDIR=/lustre/scratch/ersharma/fall_25_sraminer/test_final
+SIF=$WORKDIR/sraminer_pipeline.sif
+NTDIR=/lustre/work/ersharma/core_nt_blast
 
-     apptainer exec \
-       --bind "$WORKDIR:/work" \
-       "$SIF" \
-       mpirun -np 1 python3 -m mpi4py /work/sraminer_screen.py \
-         --keyword "ERR15129509" \
-         --threads 1 \
-         --wd /work \
-         --user_db card16.fa \
-         --db sra \
-         --mail era.sharmapau@gmail.com \
-         --pi 94 \
-         --len 70 \
-         --grep_keyword "Cardinium"
+cd "$WORKDIR"
+
+apptainer exec \
+  --bind "$WORKDIR:/work" \
+  --bind "$NTDIR:$NTDIR" \
+  --env BLASTDB="$NTDIR" \
+  --pwd /work \
+  "$SIF" \
+    mpirun -np 2 \
+    python3 -m mpi4py /work/sraminer_screen.py \
+    --keyword "SRR13979365" \
+    --threads 1 \
+    --wd /work \
+    --user_db card16.fa \
+    --db sra \
+    --mail era.sharmapau@gmail.com \
+    --pi 94 \
+    --len 70 \
+    --grep_keyword "Cardinium|Candidatus|symbiont|endo|uncultured" \
+
+```
