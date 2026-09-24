@@ -84,75 +84,109 @@ The user input command line argument required to run the script
 | `--wd` | Optional | current directory | Defines a user-managed working directory created and populated by the pipeline. Users should provide a unique directory per analysis to avoid overwriting. |
 
 ### Running SRAminer
+### 1. Set up paths
+
+Define these variables once at the top of your shell session or job script:
+
+```bash
+WORKDIR=/path/to/your/working/directory
+SIF=/path/to/sraminer_pipeline.sif
+NTDIR=/path/to/core_nt_blast
+```
+
 A. Running sraminer screen.py in a terminal with a user database:
 sraminer_screen.py starts by taking the input as a command-line argument. Here is a generalized example of how command-line arguments are used:
 
-###
-     apptainer exec \
-       --bind "<path_of_your_working_location>:/work" \
-       "<path_to_sraminer_pipeline.sif>" \
-       mpirun -np <number_of_CPUs> python3 /work/sraminer_screen.py \
-         --keyword "<dataset_to_search>" \
-         --threads 1 \
-         --wd /work \
-         --user_db <user_database.fasta> \
-         --db sra \
-         --mail your@email.com \
-         --pi <minimum_percentage_identity> \
-         --len <minimum_base_pair_length> \
-         --grep_keyword "<Target>"
+```bash
+cd "$WORKDIR"
+
+apptainer exec \
+  --bind "$WORKDIR:/work" \
+  --bind "$NTDIR:$NTDIR" \
+  --env BLASTDB="$NTDIR" \
+  --pwd /work \
+  "$SIF" \
+  mpirun -np <number_of_CPUs> python3 -m mpi4py /work/sraminer_screen.py \
+    --keyword "<dataset_to_search>" \
+    --threads 1 \
+    --wd /work \
+    --user_db <user_database.fasta> \
+    --db sra \
+    --mail your@email.com \
+    --pi <minimum_percentage_identity> \
+    --len <minimum_base_pair_length> \
+    --grep_keyword "<Target>"
+```
 
 Upon execution, the potential positive hits are stored in a folder Potential_positive_SRA_Runs, and later you can assign the CPU number equal to the number of Potential positive hits for running the sraminer_validate.py.
 
 B. Running sraminer_validate.py in a terminal with a user database:
-###
-     apptainer exec \
-       --bind "<path_of_your_working_location>:/work" \
-       "<path_to_sraminer_pipeline.sif>" \
-       mpirun -np <number_of_CPUs> python3 /work/sraminer_validate.py \
-         --keyword "<dataset_to_search>" \
-         --threads 1 \
-         --wd /work \
-         --user_db <user_database.fasta> \
-         --db sra \
-         --mail your@email.com \
-         --pi <minimum_percentage_identity> \
-         --len <minimum_base_pair_length> \
-         --grep_keyword "<Target>"
+```bash
+cd "$WORKDIR"
+
+apptainer exec \
+  --bind "$WORKDIR:/work" \
+  --bind "$NTDIR:$NTDIR" \
+  --env BLASTDB="$NTDIR" \
+  --pwd /work \
+  "$SIF" \
+  mpirun -np <number_of_CPUs> python3 -m mpi4py /work/sraminer_validate.py \
+    --keyword "<dataset_to_search>" \
+    --threads 1 \
+    --wd /work \
+    --user_db <user_database.fasta> \
+    --db sra \
+    --mail your@email.com \
+    --pi <minimum_percentage_identity> \
+    --len <minimum_base_pair_length> \
+    --grep_keyword "<Target>"
+```
 
 The positive target sequence will be stored in a directory named Positive_SRA, while metadata information will be stored in a file named metadata_tables.txt.
 
 C. Running sraminer_screen.py in a terminal without the user database:
-###
-     apptainer exec \
-       --bind "<path_of_your_working_location>:/work" \
-       "<path_to_sraminer_pipeline.sif>" \
-       mpirun -np <number_of_CPUs> python3 /work/sraminer_screen.py \
-         --keyword "<dataset_to_search>" \
-         --threads 1 \
-         --wd /work \
-         --taxon <taxon> \
-         --db sra \
-         --mail your@email.com \
-         --pi <minimum_percentage_identity> \
-         --len <minimum_base_pair_length> \
-         --grep_keyword "<Target>"
+```bash
+cd "$WORKDIR"
+
+apptainer exec \
+  --bind "$WORKDIR:/work" \
+  --bind "$NTDIR:$NTDIR" \
+  --env BLASTDB="$NTDIR" \
+  --pwd /work \
+  "$SIF" \
+  mpirun -np <number_of_CPUs> python3 -m mpi4py /work/sraminer_screen.py \
+    --keyword "<dataset_to_search>" \
+    --threads 1 \
+    --wd /work \
+    --taxon <taxon> \
+    --db sra \
+    --mail your@email.com \
+    --pi <minimum_percentage_identity> \
+    --len <minimum_base_pair_length> \
+    --grep_keyword "<Target>"
+```
 
 D. Running sraminer_validate.py in a terminal without a user database:
-###
-     apptainer exec \
-       --bind "<path_of_your_working_location>:/work" \
-       "<path_to_sraminer_pipeline.sif>" \
-       mpirun -np <number_of_CPUs> python3 /work/sraminer_validate.py \
-         --keyword "<dataset_to_search>" \
-         --threads 1 \
-         --wd /work \
-         --taxon <taxon> \
-         --db sra \
-         --mail your@email.com \
-         --pi <minimum_percentage_identity> \
-         --len <minimum_base_pair_length> \
-         --grep_keyword "<Target>"
+```bash
+cd "$WORKDIR"
+
+apptainer exec \
+  --bind "$WORKDIR:/work" \
+  --bind "$NTDIR:$NTDIR" \
+  --env BLASTDB="$NTDIR" \
+  --pwd /work \
+  "$SIF" \
+  mpirun -np <number_of_CPUs> python3 -m mpi4py /work/sraminer_validate.py \
+    --keyword "<dataset_to_search>" \
+    --threads 1 \
+    --wd /work \
+    --taxon <taxon> \
+    --db sra \
+    --mail your@email.com \
+    --pi <minimum_percentage_identity> \
+    --len <minimum_base_pair_length> \
+    --grep_keyword "<Target>"
+```
 
 ### Testing SRAminer on a small dataset:
 
