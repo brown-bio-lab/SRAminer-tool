@@ -20,6 +20,7 @@ The container includes all required software dependencies, so no manual tool ins
 
 ### The sraminer_pipeline.sif container bundles the following tools:
 - SRA Toolkit (prefetch v3.1.1): /opt/sratoolkit/bin/prefetch
+- sracha(v 0.7.0): /opt/sracha/bin/sracha
 - BLAST+ (blastn v2.14.0+): /opt/ncbi-blast/bin/blastn
 - MEGAHIT: /opt/megahit/bin/megahit
 - BWA: /usr/bin/bwa
@@ -82,6 +83,8 @@ The user input command line argument required to run the script
 | `--taxon` | Optional | - | Downloads genomes for a taxon using NCBI datasets if `user_db` is not provided. |
 | `--user_db` | Required | - | The target FASTA file defining the biological signal of interest. Used to construct a BLAST database for screening SRA reads. |
 | `--wd` | Optional | current directory | Defines a user-managed working directory created and populated by the pipeline. Users should provide a unique directory per analysis to avoid overwriting. |
+| `--downloader` | Optional, Default=sratools | Tool used to download SRA runs: sratools (prefetch, fastq-dump) or sracha. | 
+
 
 ### Running SRAminer
 ### 1. Set up paths
@@ -186,6 +189,29 @@ apptainer exec \
     --pi <minimum_percentage_identity> \
     --len <minimum_base_pair_length> \
     --grep_keyword "<Target>"
+```
+
+E. Running sraminer_screen.py in a terminal with sracha
+```bash
+cd "$WORKDIR"
+
+apptainer exec \
+  --bind "$WORKDIR:/work" \
+  --bind "$NTDIR:$NTDIR" \
+  --env BLASTDB="$NTDIR" \
+  --pwd /work \
+  "$SIF" \
+  mpirun -np <number_of_CPUs> python3 -m mpi4py /work/sraminer_screen.py \
+    --keyword "<dataset_to_search>" \
+    --threads 1 \
+    --wd /work \
+    --taxon <taxon> \
+    --db sra \
+    --mail your@email.com \
+    --pi <minimum_percentage_identity> \
+    --len <minimum_base_pair_length> \
+    --grep_keyword "<Target>"
+    --downloader "sracha"
 ```
 
 ### Testing SRAminer on a small dataset:
