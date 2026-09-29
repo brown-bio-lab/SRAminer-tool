@@ -83,7 +83,7 @@ The user input command line argument required to run the script
 | `--taxon` | Optional | - | Downloads genomes for a taxon using NCBI datasets if `user_db` is not provided. |
 | `--user_db` | Required | - | The target FASTA file defining the biological signal of interest. Used to construct a BLAST database for screening SRA reads. |
 | `--wd` | Optional | current directory | Defines a user-managed working directory created and populated by the pipeline. Users should provide a unique directory per analysis to avoid overwriting. |
-| `--downloader` | Optional, Default=sratools | Tool used to download SRA runs: sratools (prefetch, fastq-dump) or sracha. | 
+| `--downloader` | Optional | Default=sratools | Tool used to download SRA runs: sratools (prefetch, fastq-dump) or sracha. | 
 
 
 ### Running SRAminer
