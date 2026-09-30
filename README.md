@@ -18,7 +18,7 @@ SRAminer has been crafted to facilitate seamless retrieval, extraction, and iden
 
 The container includes all required software dependencies, so no manual tool installation is necessary.
 
-### The sraminer_pipeline.sif container bundles the following tools:
+### The sraminer_pipeline_v2.sif container bundles the following tools:
 - SRA Toolkit (prefetch v3.1.1): /opt/sratoolkit/bin/prefetch
 - sracha(v 0.7.0): /opt/sracha/bin/sracha
 - BLAST+ (blastn v2.14.0+): /opt/ncbi-blast/bin/blastn
@@ -93,7 +93,7 @@ Define these variables once at the top of your shell session or job script:
 
 ```bash
 WORKDIR=/path/to/your/working/directory
-SIF=/path/to/sraminer_pipeline.sif
+SIF=/path/to/sraminer_pipeline_v2.sif
 NTDIR=/path/to/core_nt_blast
 ```
 
@@ -244,7 +244,7 @@ You can run the pipeline either directly in the terminal or as a batch script on
 Example Command
 ```bash
 WORKDIR=/lustre/scratch/ersharma/fall_25_sraminer/test_final
-SIF=$WORKDIR/sraminer_pipeline.sif
+SIF=$WORKDIR/sraminer_pipeline_v2.sif
 NTDIR=/lustre/work/ersharma/core_nt_blast
 
 cd "$WORKDIR"
