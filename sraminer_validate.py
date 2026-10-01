@@ -98,11 +98,11 @@ directories = [
 #Function-0
 #Delete SRR folder
 def delete_srr_folder():
-    # Directory name
-    directory = "SRR_FILES"
-    path = os.path.join(args.wd, directory)
-#Remove the Directory
-    shutil.rmtree(path)
+    path = os.path.join(args.wd, "SRR_FILES")
+    try:
+        shutil.rmtree(path)
+    except FileNotFoundError:
+        pass  # folder already gone, nothing to do
 
 #Function-1
 # Function: get_ncbi_ids
