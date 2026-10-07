@@ -84,7 +84,7 @@ The user input command line argument required to run the script
 | `--user_db` | Required | - | The target FASTA file defining the biological signal of interest. Used to construct a BLAST database for screening SRA reads. |
 | `--wd` | Optional | current directory | Defines a user-managed working directory created and populated by the pipeline. Users should provide a unique directory per analysis to avoid overwriting. |
 | `--downloader` | Optional | Default=sratools | Tool used to download SRA runs: sratools (prefetch, fastq-dump) or sracha. | 
-
+| `--full_contig` | Optional | Default=sensitive mode | re-BLAST the extracted target contigs against NT and save the results in <wd>/full_contig/  | 
 
 ### Running SRAminer
 ### 1. Set up paths
