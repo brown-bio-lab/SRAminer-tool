@@ -17,7 +17,7 @@
 ####################################################################################
 ####################################################################################
 """
-   SraMiner - version 0.3(03/25/26)-Part2
+   SraMiner - version 0.3(10/07/26)-Part2
 
    Author - Era Sharma, Amanda M.V. Brown
    Organization - Brown Lab, Department of Biology, Texas Tech University
