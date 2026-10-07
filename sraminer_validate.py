@@ -73,6 +73,9 @@ parser.add_argument('--pi', help = "Percentage identity")
 parser.add_argument('--len', help = "Length in basepair")
 parser.add_argument('--field', help = "field")
 parser.add_argument('--maximum_returned_items', help = "mri")
+parser.add_argument('--full_contig', action='store_true',
+                    help="re-BLAST the extracted target contigs against NT and save the results in <wd>/full_contig/")
+
 
 args = parser.parse_args()
 
@@ -460,6 +463,30 @@ def assembly(sra_id):
     subprocess.call(move_final_contigs, shell = True)
     delete_empty = "find" + ' ' + args.wd +"/Positive_SRA/ -type f -empty -print -delete "
     subprocess.call(delete_empty, shell = True)
+   
+    if args.full_contig:
+        target_fa = args.wd + "/BLAST_NT_AFTER_ASSEMBLY/" + sra_id + "_target.fa"
+        assembly_fa = args.wd + "/ASSEMBLY/" + sra_id + "_to_target_assembly/final.contigs.fa"
+        fc = args.wd + "/full_contig/" + sra_id
+        os.makedirs(args.wd + "/full_contig", exist_ok=True)
+
+        # skip if no contigs matched earlier (blastn fails on an empty query)
+        if os.path.isfile(target_fa) and os.path.getsize(target_fa) > 0:
+            
+            # re-BLAST the target contigs against NT
+            blast_full = blastn_path + ' ' + "-db" + ' ' + blastn_nt + ' ' + "-query" + ' ' + target_fa + " -out" + ' ' + fc + "_target_nt.txt -num_threads" + ' ' + args.threads + ' ' + "-max_target_seqs 10 -evalue 10 -outfmt '6 qseqid sseqid sscinames sblastnames staxids pident length mismatch gapopen qstart qend sstart send stitle sskingdoms evalue bitscore'"
+            subprocess.call(blast_full, shell = True)
+
+            # contig IDs (column 1) from the re-BLAST txt
+            full_1 = "  awk -F '\t' '{print $1}'" + ' ' + fc + "_target_nt.txt > " + ' ' + fc + "_target_ntID.txt"
+            subprocess.call(full_1, shell = True)
+            full_2 = " cut -f 1 -d : " + ' ' + fc + "_target_ntID.txt > " + ' ' + fc + "_target_ntIDb.txt"
+            subprocess.call(full_2, shell = True)
+            # pull those sequences from the assembly
+            full_3 = r" perl -ne 'if(/^>(\S+)/){$c=$i{$1}}$c?print:chomp;$i{$_}=1 if @ARGV'" + ' ' + fc + "_target_ntIDb.txt" + ' ' + assembly_fa + " > " + ' ' + fc + "_full_contig.fa"
+            subprocess.call(full_3, shell = True)
+        else:
+            print(f"[{sra_id}] no target contigs found, skipping --full_contig")
 
     end_time = time.time()
     time_taken = end_time - start_time
